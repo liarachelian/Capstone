@@ -14,9 +14,8 @@ pipeline{
 				sh 'docker build . --tag=liarachelian/capstone'
 				withCredentials([usernamePassword(credentialsId: 'dockerhub', passwordVariable: 'passwd', usernameVariable: 'username')]) {
 					sh 'docker login -u $username -p $passwd'
+					sh 'docker push liarachelian/capstone'
 				}
-				docker push liarachelian/capstone
-
 			}
 		}
 
