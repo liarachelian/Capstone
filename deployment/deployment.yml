@@ -18,7 +18,7 @@ spec:
   selector:
     matchLabels:
       app: devops-capstone
-  replicas: 3
+  replicas: 1
   template:
     metadata:
       labels:
@@ -26,7 +26,7 @@ spec:
     spec:
       containers:
       - name: devops-capstone-pod
-        image: liarachelian/capstone
+        image: liarachelian/capstone:blue
         imagePullPolicy: Always
         ports:
         - containerPort: 80
