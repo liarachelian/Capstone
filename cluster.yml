@@ -7,18 +7,9 @@ metadata:
 
 nodeGroups:
   - name: ng-1
-    instanceType: m5.large
+    instanceType: t2.small
     desiredCapacity: 1
     privateNetworking: false
     ssh:
-      allow: true # will use ~/.ssh/id_rsa.pub as the default ssh key
-  - name: ng-2
-    instanceType: m5.xlarge
-    desiredCapacity: 1
-    privateNetworking: false
-    iam:
-      withAddonPolicies:
-        imageBuilder: true
-
-    ssh:
-      publicKeyPath: ~/.ssh/id_rsa.pub
+      publicKeyPath: ~/.ssh/ec2_id_rsa.pub
+  

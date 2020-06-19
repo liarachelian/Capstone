@@ -1,4 +1,6 @@
 pipeline{
+	
+	
 	agent any
 	stages {
 		stage('Lint HTML'){
@@ -7,7 +9,7 @@ pipeline{
 				sh 'hadolint Dockerfile'
 			}
 		}
-
+	
 		stage('Upload docker Image')
 		{
 			steps{
@@ -18,16 +20,57 @@ pipeline{
 				}
 			}
 		}
-
-		stage('deploy in kubernetes')
-		{
-			steps{
-				withAWS(credentials: 'udacity-capstone', region: 'us-west-2')
-				{
-					sh 'aws eks --region=us-west-2 update-kubeconfig --name devops_capstone'
-					sh 'kubectl apply -f deployment.yml'
+		stage('create eks cluster') {
+			steps {
+				withAWS(region:'us-west-2', credentials:'udacity-capstone') {
+					sh 'eksctl create cluster -f cluster.yml'	
 				}
 			}
 		}
-	}
+		stage('Setting configurations'){
+		steps {
+			withAWS(region:'us-west-2', credentials:'udacity-capstone') {
+				sh 'aws eks --region us-west-2 update-kubeconfig --name kubeconfig'
+			}
+		}
+	}	 
+	 
+	 stage('Set kubectl context') {
+			steps {
+				withAWS(region:'us-west-2', credentials:'udacity-capstone') {
+					sh '''
+						kubectl config use-context arn:aws:eks:us-west-2:071739109446:cluster/udacity-cluster
+					'''
+				}
+			}
+		}
+
+		
+		stage('Create blue service') {
+			steps {
+				withAWS(region:'us-west-2', credentials:'udacity-capstone') {
+					sh '''
+						kubectl apply -f ./deployment-blue.yml
+					'''
+				}
+			}
+		}
+
+		stage('Wait ') {
+            		steps {
+                		input "Change traffic?"
+            		}
+        	}
+
+		stage('Create green service') {
+			steps {
+				withAWS(region:'us-west-2', credentials:'udacity-capstone') {
+					sh '''
+						kubectl apply -f ./deployment-green.yml
+					'''
+				}
+			}
+		}
+     }
 }
+	
