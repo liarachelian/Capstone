@@ -11,5 +11,5 @@ nodeGroups:
     desiredCapacity: 1
     privateNetworking: false
     ssh:
-      publicKeyPath: ~/.ssh/ec2_id_rsa.pub
+      publicKeyPath: ~/.ssh/id_rsa.pub
   
