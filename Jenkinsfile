@@ -6,7 +6,7 @@ pipeline{
 		stage('Lint HTML'){
 			steps {
 				sh 'tidy -q -e index.html'
-				sh 'hadolint Dockerfile'
+				
 			}
 		}
 	
@@ -20,22 +20,16 @@ pipeline{
 				}
 			}
 		}
-		stage('create eks cluster') {
+		
+		stage('Setting configurations'){
 			steps {
 				withAWS(region:'us-west-2', credentials:'udacity-capstone') {
-					sh 'eksctl create cluster -f cluster.yml'	
-				}
-			}
-		}
-		stage('Setting configurations'){
-		steps {
-			withAWS(region:'us-west-2', credentials:'udacity-capstone') {
-				sh 'aws eks --region us-west-2 update-kubeconfig --name kubeconfig'
+					sh 'aws eks --region us-west-2 update-kubeconfig --name kubeconfig'
 			}
 		}
 	}	 
 	 
-	 stage('Set kubectl context') {
+	 	stage('Set kubectl context') {
 			steps {
 				withAWS(region:'us-west-2', credentials:'udacity-capstone') {
 					sh '''
